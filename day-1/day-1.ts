@@ -2,16 +2,16 @@ import * as fs from 'fs';
 
 const fileContent: Array<string> = fs.readFileSync('day-1-input.txt', 'utf8').split('\n\n');
 
-const exerciseOne = () => {
-  const highestTotalCalories = fileContent.map((singleElf) => singleElf.split('\n').reduce((a,b) => a + parseInt(b), 0)).sort((a, b) => a - b).slice(-1);
-
-  return highestTotalCalories;
+const baseResult = (slice: number): Array<number> => {
+  return fileContent.map((singleElf: string): number => singleElf.split('\n').reduce((a: number, b: string): number => a + parseInt(b), 0)).sort((a: number, b: number): number => a - b).slice(slice);
 }
 
-const exerciseTwo = () => {
-  const highestTotalCalories = fileContent.map((singleElf) => singleElf.split('\n').reduce((a, b) => a + parseInt(b), 0)).sort((a, b) => a - b).slice(-3).reduce((a, b) => a + b);
+const exerciseOne = (): string => {
+  return baseResult(-1).toString();
+}
 
-  return highestTotalCalories;
+const exerciseTwo = (): string => {
+  return baseResult(-3).reduce((a: number, b: number) => a + b).toString();
 }
 
 console.log('exercise-one: ' + exerciseOne());
