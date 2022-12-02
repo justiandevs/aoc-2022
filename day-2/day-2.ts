@@ -2,85 +2,73 @@ import * as fs from 'fs';
 
 const fileContent: Array<string> = fs.readFileSync('day-2-input.txt', 'utf8').split('\n');
 
-const exerciseOne = () => {
-  let amount = 0;
+interface IExercise {
+  [key: string]: number;
+}
 
-  fileContent.map((singleGame) => {
-    let array = singleGame.split("").filter((element) => element != ' ');
+interface IDraw {
+  [key: string]: IExercise;
+}
 
-    switch(array.toString()) {
-      case 'A,X':
-        amount += 4;
-        break
-      case 'A,Y':
-        amount += 8;
-        break
-      case 'A,Z':
-        amount += 3;
-        break
-      case 'B,X':
-        amount += 1;
-        break
-      case 'B,Y':
-        amount += 5;
-        break
-      case 'B,Z':
-        amount += 9;
-        break
-      case 'C,X':
-        amount += 7;
-        break
-      case 'C,Y':
-        amount += 2;
-        break
-      case 'C,Z':
-        amount += 6;
-        break
+interface IPoint {
+  [key: string]: IDraw;
+}
+
+const points: IPoint = {
+  "A": {
+    "X": {
+      "exerciseOne": 4,
+      "exerciseTwo": 3
+    },
+    "Y": {
+      "exerciseOne": 8,
+      "exerciseTwo": 4
+    },
+    "Z": {
+      "exerciseOne": 3,
+      "exerciseTwo": 8
+    },
+  },
+  "B": {
+    "X": {
+      "exerciseOne": 1,
+      "exerciseTwo": 1
+    },
+    "Y": {
+      "exerciseOne": 5,
+      "exerciseTwo": 5
+    },
+    "Z": {
+      "exerciseOne": 9,
+      "exerciseTwo": 9
     }
+  },
+  "C": {
+    "X": {
+      "exerciseOne": 7,
+      "exerciseTwo": 2
+    },
+    "Y": {
+      "exerciseOne": 2,
+      "exerciseTwo": 6,
+    },
+    "Z": {
+      "exerciseOne": 6,
+      "exerciseTwo": 7
+    }
+  }
+}
+
+const baseExercise = (exercise: string): number => {
+  let amount: number = 0;
+
+  fileContent.map((singleGame: string) => {
+    let array: Array<string> = singleGame.split("").filter((element) => element != ' ');
+    amount = amount + points[array[0]][array[1]][exercise];
   });
 
   return amount;
 }
 
-const exerciseTwo = () => {
-  let amount = 0;
-
-  fileContent.map((singleGame) => {
-    let array = singleGame.split("").filter((element) => element != ' ');
-
-    switch(array.toString()) {
-      case 'A,X':
-        amount += 3;
-        break
-      case 'A,Y':
-        amount += 4;
-        break
-      case 'A,Z':
-        amount += 8;
-        break
-      case 'B,X':
-        amount += 1;
-        break
-      case 'B,Y':
-        amount += 5;
-        break
-      case 'B,Z':
-        amount += 9;
-        break
-      case 'C,X':
-        amount += 2;
-        break
-      case 'C,Y':
-        amount += 6;
-        break
-      case 'C,Z':
-        amount += 7;
-        break
-    }
-  });
-
-  return amount;
-}
-
-console.log('exercise-one: ' + exerciseOne());
-console.log('exercise-two: ' + exerciseTwo());
+console.log('exercise-one: ' + baseExercise("exerciseOne"));
+console.log('exercise-two: ' + baseExercise("exerciseTwo"));
