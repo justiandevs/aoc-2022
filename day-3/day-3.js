@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const fileContent = fs.readFileSync('day-3-input.txt', 'utf8').split('\n');
 const priorityArray = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-const exercise = () => {
+const exerciseOne = () => {
     let amount = 0;
     fileContent.map((stringOfCharacters) => {
         let characters = [];
@@ -44,4 +44,25 @@ const exercise = () => {
     });
     return amount;
 };
-console.log('exercise-one: ' + exercise());
+const exerciseTwo = () => {
+    let amount = 0;
+    for (let i = 0; i < fileContent.length;) {
+        const arrOfElements = fileContent.slice(i, i + 3);
+        let characters = [];
+        let firstRucksack = arrOfElements[0].split('');
+        let secondRucksack = arrOfElements[1].split('');
+        let thirdRucksack = arrOfElements[2].split('');
+        firstRucksack.map((character) => {
+            if (secondRucksack.indexOf(character) > -1 && thirdRucksack.indexOf(character) > -1 && characters.indexOf(character) == -1) {
+                characters.push(character);
+            }
+        });
+        characters.map((character) => {
+            amount += priorityArray.indexOf(character) + 1;
+        });
+        i = i + 3;
+    }
+    return amount;
+};
+console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());
