@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 const fileContent: Array<string> = fs.readFileSync('day-4-input.txt', 'utf8').split('\n');
 
-const transformArray = (line: string) => {
+const transformArray = (line: string): Array<Array<number>> => {
   const baseArray: Array<string> = line.split(',');
   const firstRange: Array<string> = baseArray[0].split('-');
   const secondRange: Array<string> = baseArray[1].split('-');
