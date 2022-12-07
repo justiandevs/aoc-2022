@@ -38,7 +38,7 @@ const base = () => {
         const { size, folders } = tree[dir];
         return size + folders.map((folder) => getTotalSize(tree, `${dir}/${folder}`)).reduce((a, b) => a + b, 0);
     };
-    fileContent.map((line, index) => {
+    fileContent.map((line) => {
         var _a;
         let wholePath = path.join('/');
         if (line.startsWith("$")) {
@@ -59,8 +59,8 @@ const base = () => {
             }
         }
         if (line.startsWith('dir')) {
-            const dirName = line.split(' ');
-            tree[wholePath].folders.push(dirName[1]);
+            const pathName = line.split(' ');
+            tree[wholePath].folders.push(pathName[1]);
         }
         const size = ((_a = line.match(/\d+/)) === null || _a === void 0 ? void 0 : _a[0]);
         if (size != undefined) {
