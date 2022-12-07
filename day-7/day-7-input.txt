@@ -951,7 +951,7 @@ $ cd ..
 $ cd ..
 $ cd ..
 $ cd nqf
-$ lsd
+$ ls
 dir rglrpqd
 $ cd rglrpqd
 $ ls
