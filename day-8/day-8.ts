@@ -43,9 +43,7 @@ const exerciseOne = (): number => {
         if(!rowLeft || !rowRight || !columnLeft || !columnRight) {
           amount++;
         }
-
       } else {
-        // always visible (latest border)
         amount++;
       }
     });
@@ -54,4 +52,43 @@ const exerciseOne = (): number => {
   return amount;
 }
 
+const exerciseTwo = (): number => {
+  let amount: number = 0;
+
+  const { rows, columns } = getRowsAndColumns(fileContent);
+
+  const getDistance = (arr: number[], character: number): number => {
+    let totalSize: number = 0;
+
+    for(let i: number = 0; i < arr.length; i++) {
+      if(arr[i] >= character) {
+        totalSize++;
+        break;
+      } else {
+        totalSize++;
+      }
+    }
+
+    return totalSize;
+  }
+
+  rows.map((row: number[], index: number) => {
+    row.map((character: number, indexLine: number) => {
+      if(!(index == 0 || index == rows.length - 1 || indexLine == 0 || indexLine >= columns.length - 1)) {
+        const rowLeft = getDistance(rows[index].slice(0, indexLine).reverse(), character);
+        const rowRight = getDistance(rows[index].slice(indexLine + 1, rows[index].length), character);
+        const columnLeft = getDistance(columns[indexLine].slice(0, index).reverse(), character);
+        const columnRight = getDistance(columns[indexLine].slice(index + 1, columns[indexLine].length), character);
+
+        let total: number = rowLeft * rowRight * columnLeft * columnRight;
+
+        if(total > amount) amount = total;
+      }
+    });
+  });
+
+  return amount;
+}
+
 console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());

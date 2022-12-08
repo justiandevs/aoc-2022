@@ -56,11 +56,42 @@ const exerciseOne = () => {
                 }
             }
             else {
-                // always visible (latest border)
                 amount++;
             }
         });
     });
     return amount;
 };
+const exerciseTwo = () => {
+    let amount = 0;
+    const { rows, columns } = getRowsAndColumns(fileContent);
+    const getDistance = (arr, character) => {
+        let totalSize = 0;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] >= character) {
+                totalSize++;
+                break;
+            }
+            else {
+                totalSize++;
+            }
+        }
+        return totalSize;
+    };
+    rows.map((row, index) => {
+        row.map((character, indexLine) => {
+            if (!(index == 0 || index == rows.length - 1 || indexLine == 0 || indexLine >= columns.length - 1)) {
+                const rowLeft = getDistance(rows[index].slice(0, indexLine).reverse(), character);
+                const rowRight = getDistance(rows[index].slice(indexLine + 1, rows[index].length), character);
+                const columnLeft = getDistance(columns[indexLine].slice(0, index).reverse(), character);
+                const columnRight = getDistance(columns[indexLine].slice(index + 1, columns[indexLine].length), character);
+                let total = rowLeft * rowRight * columnLeft * columnRight;
+                if (total > amount)
+                    amount = total;
+            }
+        });
+    });
+    return amount;
+};
 console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());
