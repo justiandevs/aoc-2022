@@ -16,5 +16,6 @@ I learned a lot of things of new things when I did the challenges, below a short
 | day 5 | Parsing of more complex inputs with tranposing of stacks, deep copies in TypeScript                                                                                              |
 | day 6 | Not really anything, just a short refresh of everything I already knew                                                                                                           |
 | day 7 | Basics of recursion, tree structures, dictionaries, object mapping, object methods like Object.keys()                                                                            |
+| day 8 | .some() array operation, array parsing (column -> array) with a map   |
 
 
