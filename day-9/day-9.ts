@@ -1,125 +1,87 @@
 import * as fs from 'fs';
 
-const fileContent: string[] = fs.readFileSync('day-9-test-input.txt', 'utf8').split('\n');
+const fileContent: string[] = fs.readFileSync('day-9-input.txt', 'utf8').split('\n');
 
-let yPosHead: number = 0;
-let xPosHead: number = 0;
-let yPosTail: number = 0;
-let xPosTail: number = 0;
-let visitedCoordinates: string[] = ['0,0'];
+interface Coordinate {
+  x: number,
+  y: number
+}
+
+let headCoordinate: Coordinate = {
+  x: 0,
+  y: 0
+};
+
+let tailCoordinate: Coordinate = {
+  x: 0,
+  y: 0
+}
+
+let visitedCoordinates: Set<string> = new Set<string>();
 
 const getInstructions = (arr: string[]) => {
   let instructions: string[][] = [];
 
   arr.map((line) => {
-    instructions.push(line.split('').filter((element) => element != ' '));
+    instructions.push(line.split(' ').filter((element) => element != ' '));
   });
 
   return instructions;
 }
 
-const checkIfCoordinatesAreAlreadyVisited = (): boolean => {
-  if(visitedCoordinates.indexOf(`${xPosTail},${yPosTail}`) == -1) {
-    visitedCoordinates.push(`${xPosTail},${yPosTail}`);
-    return false;
-  } return true;
-}
+const moveTail = () => {
+  const distance = Math.max(
+    Math.abs(tailCoordinate.x - headCoordinate.x),
+    Math.abs(tailCoordinate.y - headCoordinate.y)
+  )
 
-const moveLeft = (moves: number) => {
-  for(let i = 0; i < moves; i++) {
-    xPosHead -= 1;
-    xPosTail = xPosHead;
-    if(yPosHead > yPosTail && moves > 1) {
-      yPosTail += 1;
-    } else if(yPosHead < yPosTail && moves > 1) {
-      yPosTail -= 1;
-    }
+  if(distance > 1) {
+    const x = headCoordinate.x - tailCoordinate.x;
+    const y = headCoordinate.y - tailCoordinate.y;
 
-    if(i == moves - 1) {
-      xPosTail += 1;
-    }
-
-    checkIfCoordinatesAreAlreadyVisited();
+    tailCoordinate.x += Math.abs(x) == 2 ? x / 2 : x;
+    tailCoordinate.y += Math.abs(y) == 2 ? y / 2 : y;
+    visitedCoordinates.add(`${tailCoordinate.x},${tailCoordinate.y}`);
   }
 }
 
-const moveRight = (moves: number) => {
-  for(let i = 0; i < moves; i++) {
-    xPosHead += 1;
-    xPosTail = xPosHead;
-    if(yPosHead > yPosTail && moves > 1) {
-      yPosTail += 1;
-    } else if(yPosHead < yPosTail && moves > 1) {
-      yPosTail -= 1;
-    }
-
-    if(i == moves - 1) {
-      xPosTail -= 1;
-    }
-
-    checkIfCoordinatesAreAlreadyVisited();
-  }
-}
-
-const moveUp = (moves: number) => {
-  for(let i = 0; i < moves; i++) {
-    yPosHead += 1;
-    yPosTail = yPosHead;
-    if(xPosHead > xPosTail && moves > 1) {
-      xPosTail += 1;
-    } else if(xPosHead < xPosTail && moves > 1) {
-      xPosTail -= 1;
-    }
-
-    if(i == moves - 1) {
-      yPosTail -= 1;
-    }
-
-    checkIfCoordinatesAreAlreadyVisited();
-  }
-}
-
-const moveDown = (moves: number) => {
-  for(let i = 0; i < moves; i++) {
-    yPosHead -= 1;
-    yPosTail = yPosHead;
-    if(xPosHead > xPosTail && moves > 1) {
-      xPosTail += 1;
-    } else if(xPosHead < xPosTail && moves > 1) {
-      xPosTail -= 1;
-    }
-
-    if(i == moves - 1) {
-      yPosTail += 1;
-    }
-
-    checkIfCoordinatesAreAlreadyVisited();
-  }
-}
-
-const exercise = (): number => {
-  let amount: number = 0;
-
+const exerciseOne = (): number => {
   const instructions: string[][] = getInstructions(fileContent);
+
+  visitedCoordinates.add(`0,0`);
 
   instructions.map((instruction: string[], index: number) => {
     if(instruction[0] == "L") {
-      moveLeft(parseInt(instruction[1]));
-      console.log('left', xPosTail, yPosTail)
+      for(let i: number = 0; i < parseInt(instruction[1]); i++) {
+        headCoordinate.x--;
+        moveTail();
+      }
     } else if(instruction[0] == "R") {
-      moveRight(parseInt(instruction[1]));
-      console.log('right', xPosTail, yPosTail)
+      for(let i: number = 0; i < parseInt(instruction[1]); i++) {
+        headCoordinate.x++;
+        moveTail();
+      }
     } else if(instruction[0] == "U") {
-      moveUp(parseInt(instruction[1]));
-      console.log('up', xPosTail, yPosTail)
-    } else {
-      moveDown(parseInt(instruction[1]));
-      console.log('down', xPosTail, yPosTail)
+      for(let i: number = 0; i < parseInt(instruction[1]); i++) {
+        headCoordinate.y++;
+        moveTail()
+      }
+    } else if(instruction[0] == "D") {
+      for(let i: number = 0; i < parseInt(instruction[1]); i++) {
+        headCoordinate.y--;
+        moveTail();
+      }
     }
   });
 
-  console.log(xPosHead, yPosHead, visitedCoordinates);
+  return visitedCoordinates.size;
+}
+
+const exerciseTwo = (): number => {
+  let amount: number = 0;
+
   return amount;
 }
 
-console.log('exercise: ' + exercise());
+console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());

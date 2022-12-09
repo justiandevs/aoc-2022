@@ -24,112 +24,67 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
-const fileContent = fs.readFileSync('day-9-test-input.txt', 'utf8').split('\n');
-let yPosHead = 0;
-let xPosHead = 0;
-let yPosTail = 0;
-let xPosTail = 0;
-let visitedCoordinates = ['0,0'];
+const fileContent = fs.readFileSync('day-9-input.txt', 'utf8').split('\n');
+let headCoordinate = {
+    x: 0,
+    y: 0
+};
+let tailCoordinate = {
+    x: 0,
+    y: 0
+};
+let visitedCoordinates = new Set();
 const getInstructions = (arr) => {
     let instructions = [];
     arr.map((line) => {
-        instructions.push(line.split('').filter((element) => element != ' '));
+        instructions.push(line.split(' ').filter((element) => element != ' '));
     });
     return instructions;
 };
-const checkIfCoordinatesAreAlreadyVisited = () => {
-    if (visitedCoordinates.indexOf(`${xPosTail},${yPosTail}`) == -1) {
-        visitedCoordinates.push(`${xPosTail},${yPosTail}`);
-        return false;
-    }
-    return true;
-};
-const moveLeft = (moves) => {
-    for (let i = 0; i < moves; i++) {
-        xPosHead -= 1;
-        xPosTail = xPosHead;
-        if (yPosHead > yPosTail && moves > 1) {
-            yPosTail += 1;
-        }
-        else if (yPosHead < yPosTail && moves > 1) {
-            yPosTail -= 1;
-        }
-        if (i == moves - 1) {
-            xPosTail += 1;
-        }
-        checkIfCoordinatesAreAlreadyVisited();
+const moveTail = () => {
+    const distance = Math.max(Math.abs(tailCoordinate.x - headCoordinate.x), Math.abs(tailCoordinate.y - headCoordinate.y));
+    if (distance > 1) {
+        const x = headCoordinate.x - tailCoordinate.x;
+        const y = headCoordinate.y - tailCoordinate.y;
+        tailCoordinate.x += Math.abs(x) == 2 ? x / 2 : x;
+        tailCoordinate.y += Math.abs(y) == 2 ? y / 2 : y;
+        visitedCoordinates.add(`${tailCoordinate.x},${tailCoordinate.y}`);
     }
 };
-const moveRight = (moves) => {
-    for (let i = 0; i < moves; i++) {
-        xPosHead += 1;
-        xPosTail = xPosHead;
-        if (yPosHead > yPosTail && moves > 1) {
-            yPosTail += 1;
-        }
-        else if (yPosHead < yPosTail && moves > 1) {
-            yPosTail -= 1;
-        }
-        if (i == moves - 1) {
-            xPosTail -= 1;
-        }
-        checkIfCoordinatesAreAlreadyVisited();
-    }
-};
-const moveUp = (moves) => {
-    for (let i = 0; i < moves; i++) {
-        yPosHead += 1;
-        yPosTail = yPosHead;
-        if (xPosHead > xPosTail && moves > 1) {
-            xPosTail += 1;
-        }
-        else if (xPosHead < xPosTail && moves > 1) {
-            xPosTail -= 1;
-        }
-        if (i == moves - 1) {
-            yPosTail -= 1;
-        }
-        checkIfCoordinatesAreAlreadyVisited();
-    }
-};
-const moveDown = (moves) => {
-    for (let i = 0; i < moves; i++) {
-        yPosHead -= 1;
-        yPosTail = yPosHead;
-        if (xPosHead > xPosTail && moves > 1) {
-            xPosTail += 1;
-        }
-        else if (xPosHead < xPosTail && moves > 1) {
-            xPosTail -= 1;
-        }
-        if (i == moves - 1) {
-            yPosTail += 1;
-        }
-        checkIfCoordinatesAreAlreadyVisited();
-    }
-};
-const exercise = () => {
-    let amount = 0;
+const exerciseOne = () => {
     const instructions = getInstructions(fileContent);
+    visitedCoordinates.add(`0,0`);
     instructions.map((instruction, index) => {
         if (instruction[0] == "L") {
-            moveLeft(parseInt(instruction[1]));
-            console.log('left', xPosTail, yPosTail);
+            for (let i = 0; i < parseInt(instruction[1]); i++) {
+                headCoordinate.x--;
+                moveTail();
+            }
         }
         else if (instruction[0] == "R") {
-            moveRight(parseInt(instruction[1]));
-            console.log('right', xPosTail, yPosTail);
+            for (let i = 0; i < parseInt(instruction[1]); i++) {
+                headCoordinate.x++;
+                moveTail();
+            }
         }
         else if (instruction[0] == "U") {
-            moveUp(parseInt(instruction[1]));
-            console.log('up', xPosTail, yPosTail);
+            for (let i = 0; i < parseInt(instruction[1]); i++) {
+                headCoordinate.y++;
+                moveTail();
+            }
         }
-        else {
-            moveDown(parseInt(instruction[1]));
-            console.log('down', xPosTail, yPosTail);
+        else if (instruction[0] == "D") {
+            for (let i = 0; i < parseInt(instruction[1]); i++) {
+                headCoordinate.y--;
+                moveTail();
+            }
         }
     });
-    console.log(xPosHead, yPosHead, visitedCoordinates);
+    return visitedCoordinates.size;
+};
+const exerciseTwo = () => {
+    let amount = 0;
     return amount;
 };
-console.log('exercise: ' + exercise());
+console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());
