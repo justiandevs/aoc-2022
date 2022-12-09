@@ -25,15 +25,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const fileContent = fs.readFileSync('day-9-input.txt', 'utf8').split('\n');
-let headCoordinate = {
-    x: 0,
-    y: 0
-};
-let tailCoordinate = {
-    x: 0,
-    y: 0
-};
-let visitedCoordinates = new Set();
 const getInstructions = (arr) => {
     let instructions = [];
     arr.map((line) => {
@@ -41,50 +32,65 @@ const getInstructions = (arr) => {
     });
     return instructions;
 };
-const moveTail = () => {
-    const distance = Math.max(Math.abs(tailCoordinate.x - headCoordinate.x), Math.abs(tailCoordinate.y - headCoordinate.y));
-    if (distance > 1) {
-        const x = headCoordinate.x - tailCoordinate.x;
-        const y = headCoordinate.y - tailCoordinate.y;
-        tailCoordinate.x += Math.abs(x) == 2 ? x / 2 : x;
-        tailCoordinate.y += Math.abs(y) == 2 ? y / 2 : y;
-        visitedCoordinates.add(`${tailCoordinate.x},${tailCoordinate.y}`);
+class Knot {
+    constructor(x, y) {
+        this.moveNeighbour = (knot) => {
+            const distance = Math.max(Math.abs(knot.x - this.x), Math.abs(knot.y - this.y));
+            if (distance > 1) {
+                const x = knot.x - this.x;
+                const y = knot.y - this.y;
+                this.x += Math.abs(x) == 2 ? x / 2 : x;
+                this.y += Math.abs(y) == 2 ? y / 2 : y;
+            }
+        };
+        this.x = x;
+        this.y = y;
     }
-};
+    move(direction) {
+        if (direction == "L") {
+            this.x--;
+        }
+        else if (direction == "R") {
+            this.x++;
+        }
+        else if (direction == "U") {
+            this.y++;
+        }
+        else if (direction == "D") {
+            this.y--;
+        }
+    }
+}
 const exerciseOne = () => {
     const instructions = getInstructions(fileContent);
-    visitedCoordinates.add(`0,0`);
-    instructions.map((instruction, index) => {
-        if (instruction[0] == "L") {
-            for (let i = 0; i < parseInt(instruction[1]); i++) {
-                headCoordinate.x--;
-                moveTail();
-            }
-        }
-        else if (instruction[0] == "R") {
-            for (let i = 0; i < parseInt(instruction[1]); i++) {
-                headCoordinate.x++;
-                moveTail();
-            }
-        }
-        else if (instruction[0] == "U") {
-            for (let i = 0; i < parseInt(instruction[1]); i++) {
-                headCoordinate.y++;
-                moveTail();
-            }
-        }
-        else if (instruction[0] == "D") {
-            for (let i = 0; i < parseInt(instruction[1]); i++) {
-                headCoordinate.y--;
-                moveTail();
-            }
+    const visitedCoordinates = new Set();
+    const firstKnot = new Knot(0, 0);
+    const secondKnot = new Knot(0, 0);
+    instructions.map((instruction) => {
+        for (let i = 0; i < parseInt(instruction[1]); i++) {
+            firstKnot.move(instruction[0]);
+            secondKnot.moveNeighbour(firstKnot);
+            visitedCoordinates.add(`${secondKnot.x},${secondKnot.y}`);
         }
     });
     return visitedCoordinates.size;
 };
 const exerciseTwo = () => {
-    let amount = 0;
-    return amount;
+    const instructions = getInstructions(fileContent);
+    let visitedCoordinates = new Set();
+    const arr = [new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0), new Knot(0, 0)];
+    instructions.map((instruction) => {
+        for (let i = 0; i < parseInt(instruction[1]); i++) {
+            arr[0].move(instruction[0]);
+            for (let knot = 1; knot < arr.length; knot++) {
+                const point = arr[knot];
+                point.moveNeighbour(arr[knot - 1]);
+            }
+            const lastKnot = arr.slice(-1)[0];
+            visitedCoordinates.add(`${lastKnot.x},${lastKnot.y}`);
+        }
+    });
+    return visitedCoordinates.size;
 };
 console.log('exercise-one: ' + exerciseOne());
 console.log('exercise-two: ' + exerciseTwo());
