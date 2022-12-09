@@ -56,6 +56,22 @@ class Knot implements IKnot {
   }
 }
 
+const mapOverInstructions = (instructions: string[][], arr: Knot[], visitedCoordinates: Set<string>) => {
+  instructions.map((instruction: string[]) => {
+    for(let i: number = 0; i < parseInt(instruction[1]); i++) {
+      arr[0].move(instruction[0]);
+
+      for(let knot = 1; knot < arr.length; knot++) {
+        const point: Knot = arr[knot];
+        point.moveNeighbour(arr[knot-1]);
+      }
+
+      const lastKnot: Knot = arr.slice(-1)[0];
+      visitedCoordinates.add(`${lastKnot.x},${lastKnot.y}`);
+    }
+  });
+}
+
 const exerciseOne = (): number => {
   const instructions: string[][] = getInstructions(fileContent);
   const visitedCoordinates: Set<string> = new Set<string>();
@@ -80,22 +96,33 @@ const exerciseTwo = (): number => {
 
   const arr: Knot[] = [new Knot(0, 0), new Knot(0,0), new Knot(0, 0), new Knot(0,0), new Knot(0, 0), new Knot(0,0), new Knot(0, 0), new Knot(0,0), new Knot(0, 0), new Knot(0,0)];
 
-  instructions.map((instruction: string[]) => {
-    for(let i: number = 0; i < parseInt(instruction[1]); i++) {
-      arr[0].move(instruction[0]);
-
-      for(let knot = 1; knot < arr.length; knot++) {
-        const point: Knot = arr[knot];
-        point.moveNeighbour(arr[knot-1]);
-      }
-
-      const lastKnot: Knot = arr.slice(-1)[0];
-      visitedCoordinates.add(`${lastKnot.x},${lastKnot.y}`);
-    }
-  });
+  mapOverInstructions(instructions, arr, visitedCoordinates);
 
   return visitedCoordinates.size;
 }
 
+// Exercise three was the following: [2022 Day 9] Bonus Mini Problem (only try after part 2):
+// With the given input, what's the smallest number of knots such that the tail knot doesn't move?
+const exerciseThree = (): number => {
+  const instructions: string[][] = getInstructions(fileContent);
+  let amount: number = 0;
+
+  for(let i: number = 1; i < 1000; i++) {
+    let visitedCoordinates: Set<string> = new Set<string>();
+    const arr: Knot[] = new Array(i).fill(0).map((_) => new Knot(0,0));
+
+    mapOverInstructions(instructions, arr, visitedCoordinates);
+
+    amount++;
+
+    if(visitedCoordinates.size == 1) {
+      break;
+    }
+  }
+
+  return amount;
+}
+
 console.log('exercise-one: ' + exerciseOne());
 console.log('exercise-two: ' + exerciseTwo());
+console.log('exercise-three: ' + exerciseThree());
