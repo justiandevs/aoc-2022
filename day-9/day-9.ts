@@ -19,40 +19,80 @@ const getInstructions = (arr: string[]) => {
 }
 
 const checkIfCoordinatesAreAlreadyVisited = (): boolean => {
-  if(visitedCoordinates.indexOf(`${xPosHead},${yPosHead}`) == -1) {
-    visitedCoordinates.push(`${xPosHead},${yPosHead}`);
+  if(visitedCoordinates.indexOf(`${xPosTail},${yPosTail}`) == -1) {
+    visitedCoordinates.push(`${xPosTail},${yPosTail}`);
     return false;
   } return true;
 }
 
 const moveLeft = (moves: number) => {
-  console.log('move left', moves);
   for(let i = 0; i < moves; i++) {
     xPosHead -= 1;
+    xPosTail = xPosHead;
+    if(yPosHead > yPosTail && moves > 1) {
+      yPosTail += 1;
+    } else if(yPosHead < yPosTail && moves > 1) {
+      yPosTail -= 1;
+    }
+
+    if(i == moves - 1) {
+      xPosTail += 1;
+    }
+
     checkIfCoordinatesAreAlreadyVisited();
   }
 }
 
 const moveRight = (moves: number) => {
-  console.log('move right', moves);
   for(let i = 0; i < moves; i++) {
     xPosHead += 1;
+    xPosTail = xPosHead;
+    if(yPosHead > yPosTail && moves > 1) {
+      yPosTail += 1;
+    } else if(yPosHead < yPosTail && moves > 1) {
+      yPosTail -= 1;
+    }
+
+    if(i == moves - 1) {
+      xPosTail -= 1;
+    }
+
     checkIfCoordinatesAreAlreadyVisited();
   }
 }
 
 const moveUp = (moves: number) => {
-  console.log('move up', moves);
   for(let i = 0; i < moves; i++) {
     yPosHead += 1;
+    yPosTail = yPosHead;
+    if(xPosHead > xPosTail && moves > 1) {
+      xPosTail += 1;
+    } else if(xPosHead < xPosTail && moves > 1) {
+      xPosTail -= 1;
+    }
+
+    if(i == moves - 1) {
+      yPosTail -= 1;
+    }
+
     checkIfCoordinatesAreAlreadyVisited();
   }
 }
 
 const moveDown = (moves: number) => {
-  console.log('move down', moves);
   for(let i = 0; i < moves; i++) {
     yPosHead -= 1;
+    yPosTail = yPosHead;
+    if(xPosHead > xPosTail && moves > 1) {
+      xPosTail += 1;
+    } else if(xPosHead < xPosTail && moves > 1) {
+      xPosTail -= 1;
+    }
+
+    if(i == moves - 1) {
+      yPosTail += 1;
+    }
+
     checkIfCoordinatesAreAlreadyVisited();
   }
 }
@@ -65,16 +105,20 @@ const exercise = (): number => {
   instructions.map((instruction: string[], index: number) => {
     if(instruction[0] == "L") {
       moveLeft(parseInt(instruction[1]));
+      console.log('left', xPosTail, yPosTail)
     } else if(instruction[0] == "R") {
       moveRight(parseInt(instruction[1]));
+      console.log('right', xPosTail, yPosTail)
     } else if(instruction[0] == "U") {
       moveUp(parseInt(instruction[1]));
+      console.log('up', xPosTail, yPosTail)
     } else {
       moveDown(parseInt(instruction[1]));
+      console.log('down', xPosTail, yPosTail)
     }
   });
 
-  console.log(xPosHead, yPosHead, visitedCoordinates.length);
+  console.log(xPosHead, yPosHead, visitedCoordinates);
   return amount;
 }
 
