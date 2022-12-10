@@ -58,28 +58,26 @@ const exerciseTwo = () => {
     let x = 1;
     let view = [];
     const result = [];
+    const pushCorrectElementToView = () => {
+        if (Math.abs(x - view.length % 40) <= 1) {
+            view.push('#');
+        }
+        else {
+            view.push('.');
+        }
+    };
     fileContent.map((line) => {
         const arr = line.split(' ');
         const [instruction, amount] = [arr[0], parseInt(arr[1])];
         if (instruction === "addx") {
             const cycleRounds = 2;
             for (let i = 0; i < cycleRounds; i++) {
-                if (x == view.length % 40 || x == (view.length % 40) - 1 || x == (view.length % 40) + 1) {
-                    view.push('#');
-                }
-                else {
-                    view.push('.');
-                }
+                pushCorrectElementToView();
             }
             x += amount;
         }
         else {
-            if (x == view.length || x == (view.length % 40) - 1 || x == (view.length % 40) + 1) {
-                view.push('#');
-            }
-            else {
-                view.push('.');
-            }
+            pushCorrectElementToView();
         }
     });
     for (let i = 0; i < 241; i += 40) {

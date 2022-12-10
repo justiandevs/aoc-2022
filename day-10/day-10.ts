@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 
-const fileContent: Array<string> = fs.readFileSync('day-10-input.txt', 'utf8').split('\n');
+const fileContent: string[] = fs.readFileSync('day-10-input.txt', 'utf8').split('\n');
 
-const checkCycleRounds = (signalStrength: number[], cycle: number, x: number) => {
+const checkCycleRounds = (signalStrength: number[], cycle: number, x: number): number[] => {
   const rounds: number[] = [20, 60, 100, 140, 180, 220];
 
   if(rounds.indexOf(cycle) > -1) {
@@ -16,8 +16,8 @@ const exerciseOne = (): number => {
   let cycle: number = 0;
   let signalStrength: number[] = [];
 
-  fileContent.map((line) => {
-    const arr = line.split(' ');
+  fileContent.map((line: string) => {
+    const arr: string[] = line.split(' ');
     const [instruction, amount] = [arr[0], parseInt(arr[1])];
 
     if(instruction === "addx") {
@@ -41,26 +41,26 @@ const exerciseTwo = (): string[] => {
   let view: string[] = [];
   const result: string[] = [];
 
-  fileContent.map((line) => {
-    const arr = line.split(' ');
+  const pushCorrectElementToView = (): void=> {
+    if(Math.abs(x - view.length % 40) <= 1) {
+      view.push('#');
+    } else {
+      view.push('.');
+    }
+  }
+
+  fileContent.map((line: string) => {
+    const arr: string[] = line.split(' ');
     const [instruction, amount] = [arr[0], parseInt(arr[1])];
 
     if(instruction === "addx") {
       const cycleRounds: number = 2;
       for(let i = 0; i < cycleRounds; i++ ) {
-        if(x == view.length % 40 || x == (view.length % 40) - 1 || x == (view.length % 40) + 1) {
-          view.push('#');
-        } else {
-          view.push('.');
-        }
+        pushCorrectElementToView();
       }
       x += amount;
     } else {
-      if(x == view.length || x == (view.length % 40) - 1 || x == (view.length % 40) + 1) {
-        view.push('#');
-      } else {
-        view.push('.');
-      }
+      pushCorrectElementToView();
     }
   });
 
@@ -72,4 +72,4 @@ const exerciseTwo = (): string[] => {
 }
 
 console.log('exercise-one: ' + exerciseOne());
-console.log('exercise-two: \n' + exerciseTwo().map((line) => line).join("\n"));
+console.log('exercise-two: \n' + exerciseTwo().map((line: string) => line).join("\n"));
