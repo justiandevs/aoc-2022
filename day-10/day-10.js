@@ -54,4 +54,38 @@ const exerciseOne = () => {
     });
     return signalStrength.reduce((a, b) => a + b);
 };
+const exerciseTwo = () => {
+    let x = 1;
+    let view = [];
+    const result = [];
+    fileContent.map((line) => {
+        const arr = line.split(' ');
+        const [instruction, amount] = [arr[0], parseInt(arr[1])];
+        if (instruction === "addx") {
+            const cycleRounds = 2;
+            for (let i = 0; i < cycleRounds; i++) {
+                if (x == view.length % 40 || x == (view.length % 40) - 1 || x == (view.length % 40) + 1) {
+                    view.push('#');
+                }
+                else {
+                    view.push('.');
+                }
+            }
+            x += amount;
+        }
+        else {
+            if (x == view.length || x == (view.length % 40) - 1 || x == (view.length % 40) + 1) {
+                view.push('#');
+            }
+            else {
+                view.push('.');
+            }
+        }
+    });
+    for (let i = 0; i < 241; i += 40) {
+        result.push(view.join('').substring(i, i + 40));
+    }
+    return result;
+};
 console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: \n' + exerciseTwo().map((line) => line).join("\n"));
