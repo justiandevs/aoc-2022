@@ -71,4 +71,34 @@ const exerciseOne = (): number => {
   return monkeys.map((monkey) => monkey.inspectedItems).sort((a, b) => b-a).slice(0, 2).reduce((a, b) => a * b);
 }
 
+const exerciseTwo = (): number => {
+  let monkeys: Monkey[] = [];
+
+  parseInput(fileContent, monkeys);
+
+  const divider = monkeys.map((monkey) => monkey.modulo).reduce((a, b) => a * b, 1);
+
+  for(let rounds: number = 0; rounds < 10000; rounds++) {
+    monkeys.map((monkey: Monkey) => {
+      monkey.items.map((item: number) => {
+        let worryLevel = Math.floor(getOperationFunction(monkey.operation)(item.toString()));
+        worryLevel = worryLevel % divider;
+
+        if(worryLevel % monkey.modulo == 0) {
+          monkeys[monkey.test[0]].items.push(worryLevel);
+        } else {
+          monkeys[monkey.test[1]].items.push(worryLevel);
+        }
+
+        monkey.inspectedItems++;
+      });
+
+      monkey.items = [];
+    });
+  }
+
+  return monkeys.map((monkey) => monkey.inspectedItems).sort((a, b) => b-a).slice(0, 2).reduce((a, b) => a * b);
+}
+
 console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());
