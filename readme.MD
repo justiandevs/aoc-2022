@@ -17,5 +17,10 @@ I learned a lot of things of new things when I did the challenges, below a short
 | day 6 | Not really anything, just a short refresh of everything I already knew                                                                                                           |
 | day 7 | Basics of recursion, tree structures, dictionaries, object mapping, object methods like Object.keys()                                                                            |
 | day 8 | .some() array operation, array parsing (column -> array) with a map   |
+| day 9 | Basics of math operations in javascript and OOP based programming in typescript |
+| day 10 | Basics of modulo operation, how to use string operators like .substring() |
+| day 11 | More about modulo operation, chinese remainder theorem and parsing with RegEx |
+| day 12 | Basics of dijkstra algorithm and how to reproduce pseudo code in javascript | 
+|       |                                                                                                                                                                               
 
 
