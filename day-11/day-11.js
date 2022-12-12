@@ -42,7 +42,7 @@ function getOperationFunction(input) {
 }
 const parseInput = (input, monkeys) => {
     const blocks = input.split('\n\n');
-    blocks.map((block, index) => {
+    blocks.map((block) => {
         var _a, _b, _c, _d, _e;
         const starting_items = (_a = block.match(/Starting items(?:[:,] (\d+))+/g)) === null || _a === void 0 ? void 0 : _a[0].split(': ')[1].split(', ').map(Number);
         const operation = (_b = block.match(/= ([^\n]+)/)) === null || _b === void 0 ? void 0 : _b[1];

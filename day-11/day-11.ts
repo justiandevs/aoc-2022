@@ -2,14 +2,22 @@ import * as fs from 'fs';
 
 const fileContent: string = fs.readFileSync('day-11-input.txt', 'utf8');
 
-class Monkey {
+interface IMonkey {
+  items: number[];
+  operation: string;
+  modulo: number;
+  inspectedItems: number;
+  test: number[];
+}
+
+class Monkey implements IMonkey {
   public items: number[];
   public operation: string;
   public modulo: number;
   public inspectedItems: number;
-  public test: Array<number>;
+  public test: number[];
 
-  constructor(items: number[], operation: string, modulo: number, test: Array<number>) {
+  constructor(items: number[], operation: string, modulo: number, test: number[]) {
     this.items = items;
     this.operation = operation;
     this.modulo = modulo;
@@ -28,12 +36,12 @@ function getOperationFunction(input: string) {
 const parseInput = (input: string, monkeys: Monkey[]): void => {
   const blocks: string[] = input.split('\n\n');
 
-  blocks.map((block: string, index: number) => {
-    const starting_items = block.match(/Starting items(?:[:,] (\d+))+/g)?.[0].split(': ')[1].split(', ').map(Number)!;
-    const operation = block.match(/= ([^\n]+)/)?.[1]!;
-    const modulo = block.match(/divisible by (\d+)/)?.[1]!;
-    const testIfTrue = block.match(/If true: throw to monkey (\d+)/)?.[1]!;
-    const testIfFalse = block.match(/If false: throw to monkey (\d+)/)?.[1]!;
+  blocks.map((block: string) => {
+    const starting_items: number[] = block.match(/Starting items(?:[:,] (\d+))+/g)?.[0].split(': ')[1].split(', ').map(Number)!;
+    const operation: string = block.match(/= ([^\n]+)/)?.[1]!;
+    const modulo: string = block.match(/divisible by (\d+)/)?.[1]!;
+    const testIfTrue: string = block.match(/If true: throw to monkey (\d+)/)?.[1]!;
+    const testIfFalse: string = block.match(/If false: throw to monkey (\d+)/)?.[1]!;
 
     const test = [parseInt(testIfTrue), parseInt(testIfFalse)];
 
@@ -53,7 +61,7 @@ const exerciseOne = (): number => {
   for(let rounds: number = 0; rounds < 20; rounds++) {
     monkeys.map((monkey: Monkey) => {
       monkey.items.map((item: number) => {
-        const worryLevel = Math.floor(getOperationFunction(monkey.operation)(item.toString()) / 3);
+        const worryLevel: number = Math.floor(getOperationFunction(monkey.operation)(item.toString()) / 3);
 
         if(worryLevel % monkey.modulo == 0) {
           monkeys[monkey.test[0]].items.push(worryLevel);
@@ -68,7 +76,7 @@ const exerciseOne = (): number => {
     });
   }
 
-  return monkeys.map((monkey) => monkey.inspectedItems).sort((a, b) => b-a).slice(0, 2).reduce((a, b) => a * b);
+  return monkeys.map((monkey: Monkey) => monkey.inspectedItems).sort((a, b) => b-a).slice(0, 2).reduce((a, b) => a * b);
 }
 
 const exerciseTwo = (): number => {
@@ -76,12 +84,12 @@ const exerciseTwo = (): number => {
 
   parseInput(fileContent, monkeys);
 
-  const divider = monkeys.map((monkey) => monkey.modulo).reduce((a, b) => a * b, 1);
+  const divider = monkeys.map((monkey: Monkey) => monkey.modulo).reduce((a, b) => a * b, 1);
 
   for(let rounds: number = 0; rounds < 10000; rounds++) {
     monkeys.map((monkey: Monkey) => {
       monkey.items.map((item: number) => {
-        let worryLevel = Math.floor(getOperationFunction(monkey.operation)(item.toString()));
+        let worryLevel: number = Math.floor(getOperationFunction(monkey.operation)(item.toString()));
         worryLevel = worryLevel % divider;
 
         if(worryLevel % monkey.modulo == 0) {
@@ -97,7 +105,7 @@ const exerciseTwo = (): number => {
     });
   }
 
-  return monkeys.map((monkey) => monkey.inspectedItems).sort((a, b) => b-a).slice(0, 2).reduce((a, b) => a * b);
+  return monkeys.map((monkey: Monkey) => monkey.inspectedItems).sort((a, b) => b-a).slice(0, 2).reduce((a, b) => a * b);
 }
 
 console.log('exercise-one: ' + exerciseOne());
