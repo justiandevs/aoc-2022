@@ -10,10 +10,11 @@ interface ICoordinate {
 interface IResult {
   startLocation: ICoordinate,
   endLocation: ICoordinate,
+  partTwoResult: number,
   map: number[][],
   translateCoordinateToInt: (x: number, y: number) => number;
   translateIntToCoordinate: (int: number) => ICoordinate;
-  getShortestDistance: () => { dist: any, prev: any },
+  getShortestDistance: (mode: string) => { dist: any, prev: any },
 }
 
 interface IDist {
@@ -27,11 +28,13 @@ interface IPrev {
 class Grid implements IResult {
   public startLocation: ICoordinate;
   public endLocation: ICoordinate;
+  public partTwoResult: number;
   public map: number[][];
 
   constructor(startLocation: ICoordinate, endLocation: ICoordinate, map: number[][]) {
     this.startLocation = startLocation;
     this.endLocation = endLocation;
+    this.partTwoResult = 0;
     this.map = map;
   }
 
@@ -63,8 +66,24 @@ class Grid implements IResult {
     return res;
   }
 
+  getNeighbors2(x: number, y: number, map: number[][]) {
+    const res = [];
+    if (y + 1 < map.length && map[y + 1][x] >= map[y][x] - 1) {
+      res.push(this.translateCoordinateToInt(x, y + 1));
+    }
+    if (y - 1 >= 0 && map[y - 1][x] >= map[y][x] - 1) {
+      res.push(this.translateCoordinateToInt(x, y - 1));
+    }
+    if (x + 1 < map[y].length && map[y][x + 1] >= map[y][x] - 1) {
+      res.push(this.translateCoordinateToInt(x + 1, y));
+    }
+    if (x - 1 >= 0 && map[y][x - 1] >= map[y][x] - 1) {
+      res.push(this.translateCoordinateToInt(x - 1, y));
+    }
+    return res;
+  }
 
-  getShortestDistance(): { dist: any, prev: any } {
+  getShortestDistance(mode: string): { dist: any, prev: any }{
     const dist: IDist = {};
     const prev: IPrev = {};
     let queue = [];
@@ -76,7 +95,12 @@ class Grid implements IResult {
         queue.push(id);
       }
     }
-    dist[this.translateCoordinateToInt(this.startLocation.x, this.startLocation.y)] = 0;
+
+    if(mode === "partOne") {
+      dist[this.translateCoordinateToInt(this.startLocation.x, this.startLocation.y)] = 0;
+    } else {
+      dist[this.translateCoordinateToInt(this.endLocation.x, this.endLocation.y)] = 0;
+    }
 
     while (queue.length) {
       let u: number | null = null;
@@ -85,13 +109,19 @@ class Grid implements IResult {
           u = current;
         }
       }
-      if (u === this.translateCoordinateToInt(this.endLocation.x, this.endLocation.y)) {
+      const point = this.translateIntToCoordinate(u!);
+
+      if (u === this.translateCoordinateToInt(this.endLocation.x, this.endLocation.y) && mode == "partOne") {
         break;
       }
+
+      if (this.map[point.y][point.x] === 0) {
+        this.partTwoResult = dist[u!];
+      }
+
       queue = queue.filter((x) => x !== u);
 
-      const point = this.translateIntToCoordinate(u!);
-      const neighbors = this.getNeighbours(point.x, point.y, this.map);
+      const neighbors = mode === "partOne" ? this.getNeighbours(point.x, point.y, this.map) : this.getNeighbors2(point.x, point.y, this.map);
       for (const v of neighbors) {
         if (queue.includes(v)) {
           const alt = dist[u!] + 1;
@@ -138,11 +168,16 @@ const parseInput = (input: string[]): IResult => {
 
 const exerciseOne = (): number => {
   const grid = parseInput(fileContent);
-  const dijkstra = grid.getShortestDistance();
+  const dijkstra = grid.getShortestDistance('partOne');
 
-  const distance = dijkstra.dist[grid.translateCoordinateToInt(grid.endLocation.x, grid.endLocation.y)];
+  return dijkstra.dist[grid.translateCoordinateToInt(grid.endLocation.x, grid.endLocation.y)];
+}
 
-  return distance;
+const exerciseTwo = (): number => {
+  const grid = parseInput(fileContent);
+  grid.getShortestDistance('partTwo');
+  return grid.partTwoResult;
 }
 
 console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());

@@ -29,6 +29,7 @@ class Grid {
     constructor(startLocation, endLocation, map) {
         this.startLocation = startLocation;
         this.endLocation = endLocation;
+        this.partTwoResult = 0;
         this.map = map;
     }
     translateCoordinateToInt(x, y) {
@@ -56,7 +57,23 @@ class Grid {
         }
         return res;
     }
-    getShortestDistance() {
+    getNeighbors2(x, y, map) {
+        const res = [];
+        if (y + 1 < map.length && map[y + 1][x] >= map[y][x] - 1) {
+            res.push(this.translateCoordinateToInt(x, y + 1));
+        }
+        if (y - 1 >= 0 && map[y - 1][x] >= map[y][x] - 1) {
+            res.push(this.translateCoordinateToInt(x, y - 1));
+        }
+        if (x + 1 < map[y].length && map[y][x + 1] >= map[y][x] - 1) {
+            res.push(this.translateCoordinateToInt(x + 1, y));
+        }
+        if (x - 1 >= 0 && map[y][x - 1] >= map[y][x] - 1) {
+            res.push(this.translateCoordinateToInt(x - 1, y));
+        }
+        return res;
+    }
+    getShortestDistance(mode) {
         const dist = {};
         const prev = {};
         let queue = [];
@@ -68,7 +85,12 @@ class Grid {
                 queue.push(id);
             }
         }
-        dist[this.translateCoordinateToInt(this.startLocation.x, this.startLocation.y)] = 0;
+        if (mode === "partOne") {
+            dist[this.translateCoordinateToInt(this.startLocation.x, this.startLocation.y)] = 0;
+        }
+        else {
+            dist[this.translateCoordinateToInt(this.endLocation.x, this.endLocation.y)] = 0;
+        }
         while (queue.length) {
             let u = null;
             for (const current of queue) {
@@ -76,12 +98,15 @@ class Grid {
                     u = current;
                 }
             }
-            if (u === this.translateCoordinateToInt(this.endLocation.x, this.endLocation.y)) {
+            const point = this.translateIntToCoordinate(u);
+            if (u === this.translateCoordinateToInt(this.endLocation.x, this.endLocation.y) && mode == "partOne") {
                 break;
             }
+            if (this.map[point.y][point.x] === 0) {
+                this.partTwoResult = dist[u];
+            }
             queue = queue.filter((x) => x !== u);
-            const point = this.translateIntToCoordinate(u);
-            const neighbors = this.getNeighbours(point.x, point.y, this.map);
+            const neighbors = mode === "partOne" ? this.getNeighbours(point.x, point.y, this.map) : this.getNeighbors2(point.x, point.y, this.map);
             for (const v of neighbors) {
                 if (queue.includes(v)) {
                     const alt = dist[u] + 1;
@@ -119,8 +144,13 @@ const parseInput = (input) => {
 };
 const exerciseOne = () => {
     const grid = parseInput(fileContent);
-    const dijkstra = grid.getShortestDistance();
-    const distance = dijkstra.dist[grid.translateCoordinateToInt(grid.endLocation.x, grid.endLocation.y)];
-    return distance;
+    const dijkstra = grid.getShortestDistance('partOne');
+    return dijkstra.dist[grid.translateCoordinateToInt(grid.endLocation.x, grid.endLocation.y)];
+};
+const exerciseTwo = () => {
+    const grid = parseInput(fileContent);
+    grid.getShortestDistance('partTwo');
+    return grid.partTwoResult;
 };
 console.log('exercise-one: ' + exerciseOne());
+console.log('exercise-two: ' + exerciseTwo());
