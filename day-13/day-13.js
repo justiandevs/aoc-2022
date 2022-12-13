@@ -37,6 +37,16 @@ const parseInput = (input) => {
     }
     return packets;
 };
+const parseInputv2 = (input) => {
+    let index = 1;
+    const packets = {};
+    const filteredArrays = input.filter((value) => value != '');
+    for (let i = 0; i < filteredArrays.length; i++) {
+        packets[index] = JSON.parse(filteredArrays[i]);
+        index++;
+    }
+    return packets;
+};
 const compareArray = (first, second) => {
     if (first === undefined)
         return true;
@@ -74,8 +84,13 @@ const exerciseOne = () => {
     return amount;
 };
 const exerciseTwo = () => {
-    let amount = 0;
-    return amount;
+    const packets = parseInputv2(fileContent);
+    packets[301] = [[2]];
+    packets[302] = [[6]];
+    const packetsArray = Object.keys(packets).sort((a, b) => compareArray(packets[parseInt(a)], packets[parseInt(b)]) ? -1 : 1);
+    const findPackage2 = packetsArray.findIndex((item) => item === "301") + 1;
+    const findPackage6 = packetsArray.findIndex((item) => item === "302") + 1;
+    return findPackage2 * findPackage6;
 };
 console.log('exercise-one: ' + exerciseOne());
 console.log('exercise-two: ' + exerciseTwo());

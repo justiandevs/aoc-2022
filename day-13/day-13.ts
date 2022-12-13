@@ -21,6 +21,19 @@ const parseInput = (input: string[]): IPackets => {
   return packets;
 }
 
+const parseInputv2 = (input: string[]): IPackets => {
+  let index: number = 1;
+  const packets: IPackets= {};
+  const filteredArrays = input.filter((value: string) => value != '');
+
+  for(let i: number = 0; i < filteredArrays.length; i++) {
+    packets[index] = JSON.parse(filteredArrays[i]);
+    index++;
+  }
+
+  return packets;
+}
+
 const compareArray = (first: any, second: any): boolean | undefined => {
   if(first === undefined) return true;
   if(second === undefined) return false;
@@ -64,9 +77,17 @@ const exerciseOne = (): number => {
 }
 
 const exerciseTwo = (): number => {
-  let amount: number = 0;
+  const packets: IPackets = parseInputv2(fileContent);
 
-  return amount;
+  packets[301] = [[2]];
+  packets[302] = [[6]];
+
+  const packetsArray: string[] = Object.keys(packets).sort((a, b) => compareArray(packets[parseInt(a)], packets[parseInt(b)]) ? -1 : 1);
+
+  const findPackage2: number = packetsArray.findIndex((item) => item === "301") + 1;
+  const findPackage6: number = packetsArray.findIndex((item) => item === "302") + 1;
+
+  return findPackage2 * findPackage6;
 }
 
 console.log('exercise-one: ' + exerciseOne());
