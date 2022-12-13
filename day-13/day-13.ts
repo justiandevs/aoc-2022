@@ -7,11 +7,8 @@ interface IPackets {
 }
 
 const parseInput = (input: string[]): IPackets => {
-  let output: string[] = input;
   let index: number = 1;
-
   const packets: IPackets= {};
-
   const filteredArrays = input.filter((value: string) => value != '');
 
   for(let i: number = 0; i < filteredArrays.length; i+=2) {
@@ -24,11 +21,44 @@ const parseInput = (input: string[]): IPackets => {
   return packets;
 }
 
+const compareArray = (first: any, second: any): boolean | undefined => {
+  if(first === undefined) return true;
+  if(second === undefined) return false;
+
+  const maxLength = Math.max(first.length, second.length);
+
+  if(Number.isInteger(first) && Number.isInteger(second)) {
+    if(first > second) return false;
+    if(first < second) return true;
+    return undefined;
+  }
+
+  if(!Array.isArray(first)) {
+    return compareArray([first], second);
+  }
+
+  if(!Array.isArray(second)) {
+    return compareArray(first, [second]);
+  }
+
+  for(let i: number = 0; i < maxLength; i++) {
+    const test = compareArray(first[i], second[i])
+    if(test !== undefined) return test;
+  }
+}
+
 const exerciseOne = (): number => {
   let amount: number = 0;
 
-  const packets = parseInput(fileContent);
-  console.log(packets);
+  const packets: IPackets = parseInput(fileContent);
+
+  Object.keys(packets).map((key: string) => {
+    const currentArray: number[][] = packets[parseInt(key)];
+
+    if(compareArray(currentArray[0], currentArray[1])) {
+      amount += parseInt(key);
+    }
+  })
 
   return amount;
 }

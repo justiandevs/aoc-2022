@@ -26,7 +26,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const fileContent = fs.readFileSync('day-13-input.txt', 'utf8').split('\n');
 const parseInput = (input) => {
-    let output = input;
     let index = 1;
     const packets = {};
     const filteredArrays = input.filter((value) => value != '');
@@ -38,10 +37,40 @@ const parseInput = (input) => {
     }
     return packets;
 };
+const compareArray = (first, second) => {
+    if (first === undefined)
+        return true;
+    if (second === undefined)
+        return false;
+    const maxLength = Math.max(first.length, second.length);
+    if (Number.isInteger(first) && Number.isInteger(second)) {
+        if (first > second)
+            return false;
+        if (first < second)
+            return true;
+        return undefined;
+    }
+    if (!Array.isArray(first)) {
+        return compareArray([first], second);
+    }
+    if (!Array.isArray(second)) {
+        return compareArray(first, [second]);
+    }
+    for (let i = 0; i < maxLength; i++) {
+        const test = compareArray(first[i], second[i]);
+        if (test !== undefined)
+            return test;
+    }
+};
 const exerciseOne = () => {
     let amount = 0;
     const packets = parseInput(fileContent);
-    console.log(packets);
+    Object.keys(packets).map((key) => {
+        const currentArray = packets[parseInt(key)];
+        if (compareArray(currentArray[0], currentArray[1])) {
+            amount += parseInt(key);
+        }
+    });
     return amount;
 };
 const exerciseTwo = () => {
