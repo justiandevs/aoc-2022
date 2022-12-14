@@ -28,6 +28,7 @@ const fileContent = fs.readFileSync('day-14-input.txt', 'utf8').split('\n');
 const parseInput = (input, coordinates) => {
     input.map((line) => {
         const splittedLine = line.split(' -> ');
+        console.log(splittedLine);
         for (let i = 0; i < splittedLine.length - 1; i++) {
             const [x, y] = splittedLine[i].split(',').map(Number);
             const [x2, y2] = splittedLine[i + 1].split(',').map(Number);
@@ -57,11 +58,42 @@ const parseInput = (input, coordinates) => {
         }
     });
 };
+const emulateSandFall = (coordinates) => {
+    let amountOfSandUnits = 0;
+    let last = false;
+    while (!last) {
+        const point = { x: 500, y: 0 };
+        amountOfSandUnits++;
+        while (!last) {
+            if (!coordinates.has(`${point.x}-${point.y + 1}`)) {
+                point.y++;
+            }
+            else if (!coordinates.has(`${point.x - 1}-${point.y + 1}`)) {
+                point.y++;
+                point.x--;
+            }
+            else if (!coordinates.has(`${point.x + 1}-${point.y + 1}`)) {
+                point.y++;
+                point.x++;
+            }
+            else {
+                coordinates.add(`${point.x}-${point.y}`);
+                break;
+            }
+            if (point.y >= 2000) {
+                last = true;
+                amountOfSandUnits--;
+            }
+        }
+    }
+    console.log(coordinates);
+    console.log(amountOfSandUnits);
+};
 const exerciseOne = () => {
     const coordinates = new Set();
     let amount = 0;
     parseInput(fileContent, coordinates);
-    console.log(coordinates);
+    emulateSandFall(coordinates);
     return amount;
 };
 const exerciseTwo = () => {
